@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VIGIL | Security Assessment</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
+</head>
+<body class="scan-page">
+  <div class="app-frame">
+    <aside class="sidebar">
+      <div class="brand"><span class="brand-mark">▽</span><span>VIGIL</span></div>
+      <nav class="sidebar-nav" aria-label="Primary navigation">
+        <a href="/"><span class="nav-icon">▦</span>Overview</a>
+        <a class="active" href="#scan-form"><span class="nav-icon">◎</span>Scans</a>
+        <a href="#findings"><span class="nav-icon">☷</span>Findings</a>
+        <a href="#history"><span class="nav-icon">◔</span>History</a>
+        <a href="#settings"><span class="nav-icon">⚙</span>Settings</a>
+      </nav>
+    </aside>
+
+    <div class="workspace">
+      <header class="utility-bar">
+        <label class="search-box">
+          <span>⌕</span>
+          <input type="search" placeholder="Search..." aria-label="Search">
+        </label>
+        <div class="utility-actions" aria-label="Notifications and account">
+          <button aria-label="Notifications">♧</button>
+          <button aria-label="Security status">♢</button>
+          <button aria-label="Account">◎</button>
+        </div>
+      </header>
+
+      <main class="scan-content">
+        <section class="scan-intro">
+          <h1>Configure New Scan</h1>
+          <p>Define target parameters and analysis depth for vulnerability assessment.</p>
+        </section>
+
+        <form class="scan-form" id="scan-form">
+          <div class="form-card">
+            <div class="form-card-title">Target Definition</div>
+            <div class="form-card-divider"></div>
+            <div class="target-columns">
+              <div class="field-group">
+                <label for="target-url">Target URL</label>
+                <small>Enter the primary endpoint for external scanning.</small>
+                <div class="input-shell">
+                  <span>◉</span>
+                  <input id="target-url" name="target-url" value="{{ target_url }}" placeholder="https://example.com">
+                </div>
+              </div>
+              <div class="field-group repository-field">
+                <label>Source Repository</label>
+                <small>Connect a repository for static code analysis.</small>
+                <div class="provider-buttons">
+                  <button type="button"><span>◉</span> GitHub</button>
+                  <button type="button"><span>⬟</span> GitLab</button>
+                </div>
+                <div class="input-shell">
+                  <span>↪</span>
+                  <input name="repository" placeholder="git@github.com:org/repo.git">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="scan-actions">
+            <button type="button" class="cancel-button">Cancel</button>
+            <button type="submit" class="start-button" id="scan-button"><span>▸</span> Start Analysis</button>
+          </div>
+        </form>
+
+        <section class="results-card" id="findings" hidden>
+          <div class="results-heading">
+            <div><span class="section-kicker">ASSESSMENT RESULTS</span><h2>Findings</h2></div>
+            <span class="result-count"><b id="finding-count">0</b> detected</span>
+          </div>
+          <div id="empty-findings" hidden></div>
+          <div class="finding-list" id="finding-list"></div>
+        </section>
+        <div id="history" hidden></div>
+        <div id="settings" hidden></div>
+      </main>
+    </div>
+  </div>
+  <div class="toast" id="toast" role="status"></div>
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

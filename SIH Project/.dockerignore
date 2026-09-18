@@ -1,0 +1,9 @@
+.git
+.venv
+__pycache__
+*.py[cod]
+reports
+.env
+.env.*
+!.env.example
+Data-Structures-Algo

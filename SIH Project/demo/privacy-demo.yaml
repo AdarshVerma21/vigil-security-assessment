@@ -1,0 +1,12 @@
+target_url: "http://127.0.0.1:5072"
+request_timeout: 5
+endpoints: ["/api/export?token=demo-secret-token"]
+max_endpoints: 10
+
+data_privacy:
+  enabled: true
+  discover: true
+  max_paths: 10
+  max_response_bytes: 10000
+  browser_storage: false
+  paths: ["/api/export?token=demo-secret-token"]

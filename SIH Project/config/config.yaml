@@ -1,0 +1,254 @@
+# Copy this file to a private local configuration before adding test credentials.
+target_url: "https://www.worldmonitor.app"
+request_timeout: 10
+
+# Optional same-origin paths for passive DAST discovery.
+endpoints: []
+max_endpoints: 25
+sca_requirements: "requirements.txt"
+sca_timeout: 120
+# The dashboard uses controlled DOM strings for its own status rendering.
+# Exclude those implementation files from the demo project's heuristic SAST.
+sast_exclude:
+  - "scanners/sast.py"
+  - "static/app.js"
+
+# Use only accounts and credentials explicitly authorized for testing.
+# Leave values empty until local configuration is prepared.
+test_accounts:
+  low_privilege:
+    username: ""
+    password: ""
+  high_privilege:
+    username: ""
+    password: ""
+
+# RBAC is disabled until explicitly configured with dedicated authorized accounts.
+# Every endpoint must be listed here and must also be discovered from the target root.
+rbac:
+  enabled: false
+  scope: []
+  role_levels:
+    user: 1
+    analyst: 2
+    admin: 3
+  login:
+    path: "/login"
+    method: "POST"
+    format: "form"
+    username_field: "username"
+    password_field: "password"
+    success_statuses: [200, 201, 204, 302]
+  accounts: []
+  endpoints: []
+  sensitive_markers: []
+
+# IDOR is disabled until two dedicated same-role accounts and safe GET
+# request templates are explicitly configured.
+idor:
+  enabled: false
+  scope: []
+  login:
+    path: "/login"
+    method: "POST"
+    format: "form"
+    username_field: "username"
+    password_field: "password"
+    success_statuses: [200, 201, 204, 302]
+  accounts: []
+  endpoints: []
+  sensitive_markers: []
+
+# Password checks are disabled until disposable authorized test accounts and
+# explicit registration/password-change endpoints are configured.
+password_policy:
+  enabled: false
+  scope: []
+  rules:
+    min_length: 12
+    require_uppercase: true
+    require_lowercase: true
+    require_digit: true
+    require_special: true
+    common_passwords: ["password", "Password123!", "qwerty123!"]
+  login:
+    path: "/login"
+    method: "POST"
+    format: "form"
+    username_field: "username"
+    password_field: "password"
+    success_statuses: [200, 201, 204, 302]
+  accounts: []
+  registration:
+    enabled: false
+    path: "/register"
+    method: "POST"
+    format: "form"
+    username_field: "username"
+    username: ""
+    password_field: "password"
+    fields: {}
+    success_statuses: [200, 201, 202, 204, 302]
+  password_change:
+    enabled: false
+    account: ""
+    path: "/account/password"
+    method: "POST"
+    format: "form"
+    password_field: "new_password"
+    fields: {}
+    success_statuses: [200, 201, 202, 204, 302]
+  login_protection:
+    rate_limit:
+      enabled: false
+      scope: []
+      attempts: 5
+      expected_statuses: [429, 423]
+    lockout:
+      enabled: false
+      attempts: 5
+      expected_statuses: [429, 423]
+
+# Rate-limit checks are disabled by default. Keep count conservative and
+# use only disposable authorized accounts/endpoints in a test environment.
+rate_limit:
+  enabled: false
+  count: 5
+  interval_seconds: 0.25
+  cooldown_seconds: 2
+  throttle_statuses: [401, 403, 423, 429]
+  endpoints:
+    - path: "/login"
+      method: "POST"
+      format: "form"
+      payload:
+        username: ""
+        password: ""
+
+# SQLi checks are disabled by default. Configure only disposable, authorized
+# endpoints and input points. Deep/time-based checks are intentionally refused.
+sqli:
+  enabled: false
+  scope: []
+  deep_scan: false
+  max_evidence_bytes: 500
+  endpoints:
+    - path: "/api/search"
+      method: "GET"
+      inputs:
+        - name: "q"
+          location: "query"
+
+# Session-management checks are disabled by default and require explicit
+# authorized login/logout/protected endpoint configuration.
+session_management:
+  enabled: false
+  scope: []
+  min_token_length: 24
+  min_token_entropy: 3.5
+  min_unique_characters: 10
+  token_cookie_patterns: ["session", "auth", "token", "jwt", "sid"]
+  login:
+    path: "/login"
+    prefetch_path: "/login"
+    method: "POST"
+    format: "form"
+    username_field: "username"
+    password_field: "password"
+    fields: {}
+    success_statuses: [200, 201, 204, 302]
+  accounts: []
+  protected_paths: ["/account"]
+  protected_method: "GET"
+  protected_success_statuses: [200, 204]
+  logout:
+    enabled: false
+    account: ""
+    path: "/logout"
+    method: "POST"
+    format: "form"
+    fields: {}
+  expiry:
+    enabled: false
+    account: ""
+    wait_seconds: 2
+    expected_statuses: [401, 403, 419, 440]
+
+# API checks are disabled by default. Configure only same-origin API routes
+# and disposable authorized accounts. Mass-assignment checks require an
+# explicit verify_path because they write a canary value.
+api_security:
+  enabled: false
+  scope: []
+  login:
+    path: "/login"
+    method: "POST"
+    format: "form"
+    username_field: "username"
+    password_field: "password"
+    success_statuses: [200, 201, 204, 302]
+  accounts: []
+  endpoints:
+    - path: "/api/profile"
+      type: "rest"
+      method: "GET"
+      format: "json"
+      requires_auth: true
+    - path: "/graphql"
+      type: "graphql"
+      method: "POST"
+      format: "json"
+      requires_auth: true
+      fields:
+        query: "{ viewer { id } }"
+      error_payload:
+        query: "{ invalidField }"
+    - path: "/api/profile"
+      type: "rest"
+      method: "PATCH"
+      format: "json"
+      requires_auth: true
+      mass_assignment: false
+      unexpected_field: "__vigil_probe"
+      verify_path: "/api/profile"
+
+# Passive privacy checks are disabled by default. They never submit payloads.
+data_privacy:
+  enabled: false
+  discover: true
+  max_paths: 25
+  max_response_bytes: 10000
+  browser_storage: false
+  browser_paths: ["/"]
+  paths: []
+
+# Active XSS is disabled by default and requires Playwright plus an installed
+# Chromium browser. Use only disposable authorized targets and test accounts.
+xss:
+  enabled: false
+  scope: []
+  evidence_dir: "reports/xss"
+  login:
+    path: "/login"
+    method: "POST"
+    format: "form"
+    username_field: "username"
+    password_field: "password"
+    success_statuses: [200, 201, 204, 302]
+  accounts: []
+  endpoints:
+    - type: "reflected"
+      path: "/search"
+      method: "GET"
+      location: "query"
+      parameter: "q"
+      view_path: "/search"
+    - type: "stored"
+      path: "/profile/bio"
+      method: "POST"
+      format: "form"
+      location: "form"
+      parameter: "bio"
+      view_path: "/profile"
+      browser_path: true
+      fields: {}

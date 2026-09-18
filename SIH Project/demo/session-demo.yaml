@@ -1,0 +1,38 @@
+target_url: "http://127.0.0.1:5070"
+request_timeout: 5
+
+session_management:
+  enabled: true
+  scope: ["http://127.0.0.1:5070"]
+  min_token_length: 24
+  min_token_entropy: 3.5
+  min_unique_characters: 10
+  token_cookie_patterns: ["session"]
+  login:
+    path: "/login"
+    prefetch_path: "/login"
+    method: "POST"
+    format: "form"
+    username_field: "username"
+    password_field: "password"
+    success_statuses: [200]
+  accounts:
+    - name: "demo-account"
+      username: "demo"
+      password: "demo-password"
+  protected_paths:
+    - "/account"
+  protected_method: "GET"
+  protected_success_statuses: [200]
+  logout:
+    enabled: true
+    account: "demo-account"
+    path: "/logout"
+    method: "POST"
+    format: "form"
+    fields: {}
+  expiry:
+    enabled: true
+    account: "demo-account"
+    wait_seconds: 2
+    expected_statuses: [401, 403, 419, 440]

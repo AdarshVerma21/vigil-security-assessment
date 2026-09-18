@@ -1,0 +1,42 @@
+target_url: "http://127.0.0.1:5071"
+request_timeout: 5
+endpoints: []
+max_endpoints: 25
+
+api_security:
+  enabled: true
+  scope: ["http://127.0.0.1:5071"]
+  login:
+    path: "/login"
+    method: "POST"
+    format: "form"
+    username_field: "username"
+    password_field: "password"
+    success_statuses: [200]
+  accounts:
+    - name: "demo"
+      username: "demo"
+      password: "demo-password"
+  endpoints:
+    - path: "/api/profile"
+      type: "rest"
+      method: "GET"
+      format: "json"
+      requires_auth: true
+    - path: "/graphql"
+      type: "graphql"
+      method: "POST"
+      format: "json"
+      requires_auth: false
+      fields:
+        query: "{ viewer { id } }"
+      error_payload:
+        query: "{ invalidField }"
+    - path: "/api/profile"
+      type: "rest"
+      method: "PATCH"
+      format: "json"
+      requires_auth: true
+      mass_assignment: true
+      unexpected_field: "__vigil_probe"
+      verify_path: "/api/profile"
