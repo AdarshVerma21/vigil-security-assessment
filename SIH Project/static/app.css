@@ -1122,6 +1122,128 @@ pre,
   background: #171b22;
 }
 
+.dashboard-view[hidden] {
+  display: none;
+}
+
+.overview-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.overview-stat {
+  padding: 17px;
+  border: 1px solid #30343e;
+  border-radius: 3px;
+  background: #171b22;
+}
+
+.overview-stat span {
+  color: #9297a4;
+  font-size: 10px;
+  letter-spacing: .1em;
+}
+
+.overview-stat strong {
+  display: block;
+  margin: 9px 0 2px;
+  color: #e2e4eb;
+  font-size: 24px;
+}
+
+.overview-stat small,
+.panel-copy,
+.settings-form > small {
+  color: #a3a6b0;
+  font-size: 11px;
+}
+
+.overview-card {
+  color: #a3a6b0;
+}
+
+.history-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.history-list {
+  display: grid;
+  gap: 7px;
+}
+
+.history-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #30343e;
+  border-radius: 2px;
+  background: #0e1117;
+  color: #d9dce5;
+  text-align: left;
+  cursor: pointer;
+}
+
+.history-row:hover {
+  border-color: #59617a;
+  background: #171b22;
+}
+
+.history-row span {
+  display: grid;
+  gap: 3px;
+}
+
+.history-row span:last-child {
+  text-align: right;
+}
+
+.history-row small {
+  color: #a3a6b0;
+  font-size: 10px;
+}
+
+.history-row b {
+  color: #d4dcff;
+  font-size: 16px;
+}
+
+.settings-form {
+  color: #d5d6de;
+}
+
+.settings-form > label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.settings-input {
+  margin: 8px 0 15px;
+}
+
+.settings-check {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500 !important;
+}
+
+.settings-check input {
+  accent-color: #d2dcff;
+}
+
+.settings-actions {
+  margin-bottom: 0;
+}
+
 .results-heading {
   display: flex;
   align-items: center;
@@ -1204,6 +1326,10 @@ pre,
   .target-columns {
     grid-template-columns: 1fr;
     gap: 17px;
+  }
+
+  .overview-grid {
+    grid-template-columns: 1fr;
   }
 
   .search-box {

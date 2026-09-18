@@ -11,11 +11,11 @@
     <aside class="sidebar">
       <div class="brand"><span class="brand-mark">▽</span><span>VIGIL</span></div>
       <nav class="sidebar-nav" aria-label="Primary navigation">
-        <a href="/"><span class="nav-icon">▦</span>Overview</a>
-        <a class="active" href="#scan-form"><span class="nav-icon">◎</span>Scans</a>
-        <a href="#findings"><span class="nav-icon">☷</span>Findings</a>
-        <a href="#history"><span class="nav-icon">◔</span>History</a>
-        <a href="#settings"><span class="nav-icon">⚙</span>Settings</a>
+        <a href="#overview" data-view="overview"><span class="nav-icon">▦</span>Overview</a>
+        <a class="active" href="#scan-form" data-view="scans"><span class="nav-icon">◎</span>Scans</a>
+        <a href="#findings" data-view="findings"><span class="nav-icon">☷</span>Findings</a>
+        <a href="#history" data-view="history"><span class="nav-icon">◔</span>History</a>
+        <a href="#settings" data-view="settings"><span class="nav-icon">⚙</span>Settings</a>
       </nav>
     </aside>
 
@@ -33,6 +33,25 @@
       </header>
 
       <main class="scan-content">
+        <section class="dashboard-view" id="overview" data-section="overview" hidden>
+          <section class="scan-intro">
+            <h1>Overview</h1>
+            <p>Monitor assessment activity and security posture from one workspace.</p>
+          </section>
+          <div class="overview-grid">
+            <article class="overview-stat"><span>SCANS COMPLETED</span><strong id="overview-scans">0</strong><small>In this session</small></article>
+            <article class="overview-stat"><span>FINDINGS IDENTIFIED</span><strong id="overview-findings">0</strong><small>Across all scans</small></article>
+            <article class="overview-stat"><span>LAST STATUS</span><strong id="overview-status">Ready</strong><small id="overview-target">No scan run yet</small></article>
+          </div>
+          <div class="form-card overview-card">
+            <div class="form-card-title">Scanner readiness</div>
+            <div class="form-card-divider"></div>
+            <p class="panel-copy">SAST, passive DAST, SCA, API, authorization, session, privacy, and opt-in active checks are available. Active checks remain disabled until explicitly enabled and scoped in configuration.</p>
+            <button type="button" class="ghost-button" data-view="scans">Configure a scan</button>
+          </div>
+        </section>
+
+        <section class="dashboard-view" id="scan-view" data-section="scans">
         <section class="scan-intro">
           <h1>Configure New Scan</h1>
           <p>Define target parameters and analysis depth for vulnerability assessment.</p>
@@ -80,8 +99,44 @@
           <div id="empty-findings" hidden></div>
           <div class="finding-list" id="finding-list"></div>
         </section>
-        <div id="history" hidden></div>
-        <div id="settings" hidden></div>
+        </section>
+
+        <section class="dashboard-view" id="history" data-section="history" hidden>
+          <section class="scan-intro">
+            <h1>Scan History</h1>
+            <p>Review assessments completed during this application session.</p>
+          </section>
+          <div class="form-card">
+            <div class="history-toolbar">
+              <div class="form-card-title">Recent assessments</div>
+              <button type="button" class="ghost-button" id="refresh-history">Refresh</button>
+            </div>
+            <div id="history-list" class="history-list">
+              <p class="panel-copy">No scans have been completed yet.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="dashboard-view" id="settings" data-section="settings" hidden>
+          <section class="scan-intro">
+            <h1>Settings</h1>
+            <p>Manage dashboard preferences without changing target-side configuration.</p>
+          </section>
+          <form class="form-card settings-form" id="settings-form">
+            <div class="form-card-title">Workspace preferences</div>
+            <div class="form-card-divider"></div>
+            <label for="settings-target-url">Default target URL</label>
+            <small>Used when starting a scan without overriding the target.</small>
+            <div class="input-shell settings-input">
+              <span>◉</span><input id="settings-target-url" type="url" required>
+            </div>
+            <label class="settings-check"><input id="settings-remember-target" type="checkbox" checked> Remember target URL in this browser</label>
+            <div class="scan-actions settings-actions">
+              <button type="submit" class="start-button">Save Settings</button>
+              <button type="button" class="cancel-button" id="reset-settings">Reset</button>
+            </div>
+          </form>
+        </section>
       </main>
     </div>
   </div>

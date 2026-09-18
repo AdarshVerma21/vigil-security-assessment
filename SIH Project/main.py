@@ -2,6 +2,7 @@
 
 import argparse
 import os
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict
 
@@ -119,6 +120,8 @@ def create_app(config_path: Path | None = None) -> Flask:
         result = {
             "status": "completed",
             "mode": mode,
+            "target_url": target_url,
+            "completed_at": datetime.now(timezone.utc).isoformat(),
             "finding_count": len(findings),
             "findings": [finding.to_dict() for finding in findings],
         }
@@ -129,7 +132,12 @@ def create_app(config_path: Path | None = None) -> Flask:
             {
                 **result,
                 "history": [
-                    {"mode": item["mode"], "finding_count": item["finding_count"]}
+                    {
+                        "mode": item["mode"],
+                        "target_url": item["target_url"],
+                        "completed_at": item["completed_at"],
+                        "finding_count": item["finding_count"],
+                    }
                     for item in history
                 ],
             }
